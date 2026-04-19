@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login & Registration Popup</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffb6c1, #ff69b4, #d0067c);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Heading on top */
+    .page-title {
+      font-size: 28px;
+      color: #fff;
+      font-weight: 700;
+      margin-top: 30px;
+      margin-bottom: 60px;
+      text-shadow: 0 2px 4px rgba(3,2,2,0.5);
+      text-align: center;
+      text-shadow: #1c1c1c;
+    }
+
+    /* Buttons in the middle */
+    .button-container {
+      margin-top: auto;
+      margin-bottom: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      background: #fff;
+      color: #17030e;
+      font-weight: 600;
+      padding: 18px 28px;
+      border-radius: 50px;
+      box-shadow: 0 4px 10px rgba(44, 39, 39, 0.9);
+      transition: all 0.3s ease;
+      margin: 8px;
+    }
+
+    button:hover {
+      background: #616061;
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* Popup overlay */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+    }
+
+    /* Popup container */
+    .popup {
+      background: #fff;
+      border-radius: 20px;
+      width: 380px;
+      padding: 40px 30px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transform: scale(0.7);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .popup.active {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .popup h2 {
+      margin-bottom: 20px;
+      color: #ff1493;
+    }
+
+    .popup input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .popup input:focus {
+      border-color: #ff69b4;
+      outline: none;
+    }
+
+    .popup .btn {
+      background: #ff1493;
+      color: #fff;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .popup .btn:hover {
+      background: #ff69b4;
+    }
+
+    .popup .switch {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .popup .switch a {
+      color: #ff1493;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* Close button */
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      color: #999;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .close-btn:hover {
+      color: #ff1493;
+    }
+  </style>
+</head>
+<body>
+  <!-- Heading stays fixed at the top -->
+  <h1 class="page-title">Login or Create an Account</h1>
+
+  <!-- Buttons stay centered -->
+  <div class="button-container">
+    <button id="open-login">Login</button>
+    <button id="open-register">Register</button>
+  </div>
+
+  <!-- Popup Overlay -->
+  <div class="popup-overlay" id="popup-overlay">
+    <!-- Login Popup -->
+    <div class="popup" id="login-popup">
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+      <h2>Login</h2>
+      <input type="text" placeholder="Email or Username" />
+      <input type="password" placeholder="Password" />
+      <button class="btn">Login</button>
+      <div class="switch">
+        Don't have an account?
+        <a onclick="switchToRegister()">Register here</a>
+      </div>
+    </div>
+
+    <!-- Register Popup -->
+    <div class="popup" id="register-popup">
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+      <h2>Register</h2>
+      <input type="text" placeholder="Full Name" />
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <input type="password" placeholder="Confirm Password" />
+      <button class="btn">Sign Up</button>
+      <div class="switch">
+        Already have an account?
+        <a onclick="switchToLogin()">Login here</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const overlay = document.getElementById("popup-overlay");
+    const loginPopup = document.getElementById("login-popup");
+    const registerPopup = document.getElementById("register-popup");
+
+    document.getElementById("open-login").addEventListener("click", () => {
+      overlay.style.display = "flex";
+      loginPopup.classList.add("active");
+      registerPopup.classList.remove("active");
+    });
+
+    document.getElementById("open-register").addEventListener("click", () => {
+      overlay.style.display = "flex";
+      registerPopup.classList.add("active");
+      loginPopup.classList.remove("active");
+    });
+
+    function closePopup() {
+      overlay.style.display = "none";
+      loginPopup.classList.remove("active");
+      registerPopup.classList.remove("active");
+    }
+
+    function switchToRegister() {
+      loginPopup.classList.remove("active");
+      registerPopup.classList.add("active");
+    }
+
+    function switchToLogin() {
+      registerPopup.classList.remove("active");
+      loginPopup.classList.add("active");
+    }
+
+    // Close popup when clicking outside
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closePopup();
+    });
+  </script>
+</body>
+</html>
